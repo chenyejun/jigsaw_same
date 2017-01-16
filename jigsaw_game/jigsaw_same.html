@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no" />
+	<script src="jquery-1.8.3.min.js"></script>
+	<style>
+		.out
+		{
+			height:300px;
+			width: 300px;
+			background: #ccc;
+			position: relative;
+			margin: 50px auto;
+		}
+
+		.same
+		{
+			position: absolute;
+			z-index: 2;
+			height: 100px;
+			width: 100px;
+			background: orange;
+			cursor:pointer;
+		}
+
+		.rect9
+		{
+			background: #ccc;
+		}
+
+	
+		
+	</style>
+</head>
+<body>
+	<div class="out">
+		<div class="same rect1"></div>
+		<div class="same rect2"></div>
+		<div class="same rect3"></div>
+		<div class="same rect4"></div>
+		<div class="same rect5"></div>
+		<div class="same rect6"></div>
+		<div class="same rect7"></div>
+		<div class="same rect8"></div>
+		<div class="same rect9"></div>
+	</div>
+</body>
+<script>
+	$(function()
+	{
+		var $out=$('.out');
+		var $same=$('.same');
+		var messActive=[];
+
+		var mess=[
+			{tag:1,left:0,top:0,x:1,y:1},{tag:2,left:100,top:0,x:1,y:2},{tag:3,left:200,top:0,x:1,y:3},
+			{tag:4,left:0,top:100,x:2,y:1},{tag:5,left:100,top:100,x:2,y:2},{tag:6,left:200,top:100,x:2,y:3},
+			{tag:7,left:0,top:200,x:3,y:1},{tag:8,left:100,top:200,x:3,y:2},{tag:0,left:200,top:200,x:3,y:3}
+		];
+
+
+		/*随机生成9个不重复的数*/
+		for(var i=0;i<8;i++)
+		{
+			messActive[i]=i;
+		}
+		messActive.sort(function(){ return 0.5 - Math.random(); });
+		
+		/*随机编排*/
+		for(var i=0;i<$same.length;i++)
+		{
+			(function(i){
+				var nowRect=$same.eq(i);
+				if(i==8)
+				{
+					nowRect.css({left:mess[i].left,top:mess[i].top});
+					nowRect.attr('tag',mess[i].tag);
+					nowRect.attr({x:mess[i].x,y:mess[i].y});
+				}
+				else
+				{
+					var k=messActive[i];
+					nowRect.css({left:mess[k].left,top:mess[k].top});
+					nowRect.attr('tag',mess[k].tag);
+					nowRect.attr({x:mess[k].x,y:mess[k].y});
+					nowRect.css({background:'url(images/goddess_0'+i+'.png)'});
+				}
+
+
+			})(i);
+		}
+
+
+
+
+		$out.bind('click',function(e)
+		{
+			var blank;
+			var $target=$(e.target);
+			var x,y;
+			for(var j=0;j<$same.length;j++)
+			{
+				if($same.eq(j).attr('tag')=='0')
+				{
+					blank=$same.eq(j);
+				}
+			
+			}	
+
+			var clickTargetX=parseInt($target.attr('x'));
+			var clickTargetY=parseInt($target.attr('y'));
+			var clickTargetLeft=parseInt($target.css('left'));
+			var clickTargetTop=parseInt($target.css('top'));
+
+			var blankX=parseInt(blank.attr('x'));
+			var blankY=parseInt(blank.attr('y'));
+			var blankLeft=parseInt(blank.css('left'));
+			var blankTop=parseInt(blank.css('top'));
+
+			if(Math.abs(clickTargetX-blankX)+Math.abs(clickTargetY-blankY)==1)
+			{
+				$target.animate({left:blankLeft,top:blankTop});
+				//$target.css({left:blankLeft,top:blankTop});
+				$target.attr({'x':blankX,'y':blankY});
+
+				//blank.animate({left:clickTargetLeft,top:clickTargetTop});
+				blank.css({left:clickTargetLeft,top:clickTargetTop});
+				blank.attr({'x':clickTargetX,'y':clickTargetY});
+			}
+			else
+			{
+				return false;
+			}
+		});
+
+
+		
+
+
+	});
+</script>
+</html>
